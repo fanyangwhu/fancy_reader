@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # fancy_reader
 
 A new Flutter application.
@@ -14,3 +15,6 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# fancy_reader
+>>>>>>> 0290fc03ea3451ff1ef9758bda755706547949e5
