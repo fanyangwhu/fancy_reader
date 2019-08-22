@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/drawer.dart';
+import 'shelf.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _HomeState extends State<Home> {
     return new Scaffold(
       key: scaffoldkey,
       drawer: new MyDrawer(),
-      //body: new Shelf(),
+      body: new Shelf(),
     );
   }
 }
