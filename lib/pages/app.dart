@@ -17,6 +17,14 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return new MaterialApp(
+      title: '帆阅',
+      theme: ThemeData(
+        primaryColor: Colors.blueGrey,
+        primarySwatch: Colors.blueGrey,
+        backgroundColor: Colors.white,
+        brightness: Brightness.light,
+        //platform: TargetPlatform.android,
+      ),
       home: new Home(),
       //routes: ,
     );
