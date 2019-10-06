@@ -32,7 +32,7 @@ class _BookDetailState extends State<BookDetail> with AutomaticKeepAliveClientMi
       body: null,
     );
   }
-  
+
 
 
 
