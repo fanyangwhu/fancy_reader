@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../models/book.dart';
 import '../utils/api_manager.dart';
 import '../models/bookinfo.dart';
+import 'read.dart';
 
 
 class Shelf extends StatefulWidget {
@@ -81,7 +83,87 @@ class _ShelfState extends State<Shelf> with AutomaticKeepAliveClientMixin{
 
   //书架书籍条目信息，TBD
   Widget bookShelfItem(Book book) {
-    return null;
+    return InkWell(
+      onLongPress: () {
+        //TBD
+      },
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) {
+              return ReadPage(book.id);
+            }));
+      },
+      highlightColor: Colors.black12,
+      child: Container(
+        margin: EdgeInsets.only(left: 15.0,right: 15.0, top: 10.0, bottom: 10.0),
+        height: 100.0,
+        child: Row(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2.0),
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: book.img,
+                width: 80.0,
+                height: 100.0,
+              ),
+            ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.only(left: 20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      book.name,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w100,
+                        color: Colors.black
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      book.author,
+                      style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w100,
+                          color: Colors.black
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      "最新：${book.lastChapter}",
+                      style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w100,
+                          color: Colors.black
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      book.updateTime,
+                      style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w100,
+                          color: Colors.black
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+    );
   }
 
 

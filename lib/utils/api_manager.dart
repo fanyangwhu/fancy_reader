@@ -66,3 +66,15 @@ Future<Map> getCategoryData() async {
   }
   return result.data;
 }
+
+Future<Map> getChaptersData(int bookId) async {
+  var result = await Dio().get("${Api.chaptersApi}/$bookId/");
+  var data = result.data.toString().replaceAll(',]', ']');
+  return json.decode(data);
+}
+
+Future<Map> getChapterData(int bookId, String chapterId) async {
+  var result = await Dio().get("${Api.chapterApi}/$bookId/$chapterId.html");
+  var data = result.data.toString().replaceAll(',]', ']');
+  return json.decode(data);
+}

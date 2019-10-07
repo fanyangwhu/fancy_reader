@@ -1,11 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fancy_reader/pages/book_detail.dart';
 import 'package:flutter/material.dart';
 import '../models/book.dart';
 
 Widget bookItemCard(BuildContext context, Book book) {
   return Expanded(
     child: InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) {
+              return BookDetail(book.id, book.name);
+            }));
+      },
       child: Container(
         padding: EdgeInsets.all(10.0),
         child: Column(

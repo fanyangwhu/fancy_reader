@@ -23,8 +23,8 @@ class _HomeState extends State<Home>
     _navigationViews = [
       NavigationIconView(
         title: '书架',
-        iconData: Icons.list,
-        activeIconData: Icons.list,
+        iconData: Icons.assessment,
+        activeIconData: Icons.assessment,
       ),
       NavigationIconView(
         title: '书城',
@@ -33,8 +33,8 @@ class _HomeState extends State<Home>
       ),
       NavigationIconView(
         title: '我的',
-        iconData: Icons.account_box,
-        activeIconData: Icons.account_box,
+        iconData: Icons.person,
+        activeIconData: Icons.person,
       ),
     ];
     _pages =[
@@ -57,7 +57,7 @@ class _HomeState extends State<Home>
         return view.item;
       }).toList(),
       currentIndex: _currentIndex,
-      fixedColor: Colors.red,
+      fixedColor: Colors.blueGrey,
       type: BottomNavigationBarType.fixed,
       onTap: (int index) {
         setState(() {
