@@ -4,7 +4,8 @@ import 'package:fancy_reader/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/volum_chapt.dart';
-
+import './reader/reader_overlay.dart';
+import './reader/pages_count.dart';
 
 class ReadPage extends StatefulWidget {
   final int bookId;
@@ -18,7 +19,8 @@ class ReadPage extends StatefulWidget {
   }
 }
 
-class _ReadPageState extends State<ReadPage> with AutomaticKeepAliveClientMixin {
+class _ReadPageState extends State<ReadPage>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
   final BookSqlite _bookSqlite = BookSqlite();
 
@@ -30,11 +32,11 @@ class _ReadPageState extends State<ReadPage> with AutomaticKeepAliveClientMixin 
   int _currPosition = 0;
   bool _isAdd = false;
 
-  double _progress =  0.0;
-  double _lineHeight = 2.0;
+  double _progress = 0.0;
+  double _lineHeight = 1.5;
   double _tilteFontSize = 24.0;
   double _contentFontSize = 18.0;
-  double _letterSpacing = 2.0;
+  double _letterSpacing = 1.0;
 
   @override
   void initState() {
@@ -53,21 +55,20 @@ class _ReadPageState extends State<ReadPage> with AutomaticKeepAliveClientMixin 
   @override
   void dispose() {
     _bookSqlite.close();
-    SystemChrome.setEnabledSystemUIOverlays([
-      SystemUiOverlay.top, SystemUiOverlay.bottom
-    ]);
+    SystemChrome.setEnabledSystemUIOverlays(
+        [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     super.dispose();
   }
 
   _getChaptersData() {
     getChaptersData(widget.bookId).then((map) {
       setState(() {
-        for (int i =0; i < map['data']['list'].length; i++) {
+        for (int i = 0; i < map['data']['list'].length; i++) {
           _volume.add(Volume.fromMap(map['data']['list'][i]));
         }
-        for (int i =0; i < _volume.length; i++) {
-          _chapter.add(Chapter(name: _volume[i].name,
-              isHeader: true, headerId: i ));
+        for (int i = 0; i < _volume.length; i++) {
+          _chapter
+              .add(Chapter(name: _volume[i].name, isHeader: true, headerId: i));
           _chapter.addAll(_volume[i].clist);
         }
 
@@ -92,12 +93,22 @@ class _ReadPageState extends State<ReadPage> with AutomaticKeepAliveClientMixin 
             print('get book position');
           }
         }
-        _getChapter();
+        _getChapter(false);
+        if (_pagesIndexList.isNotEmpty) {
+          //_pagesCount = _pagesIndexList.length;
+          _currPagesContent = _content.substring(
+              _pagesIndexList[0]['start'], _pagesIndexList[0]['end']);
+        }
       });
     });
   }
 
-  _getChapter() {
+  //double screenSize = MediaQuery.
+  List<Map<String, int>> _pagesIndexList;
+  int _currPagesIndex = 0;
+  String _currPagesContent = '';
+
+  _getChapter(bool isPre) {
     setState(() {
       _progress = _currPosition / _chapter.length;
     });
@@ -108,16 +119,84 @@ class _ReadPageState extends State<ReadPage> with AutomaticKeepAliveClientMixin 
     } else {
       getChapterData(widget.bookId, _chapter[_currPosition].id.toString())
           .then((map) {
-            setState(() {
-              _content = map['data']['content'].toString();
-            });
+        var _widthSc = MediaQuery.of(context).size.width - 60;
+        var _heightSc =
+            MediaQuery.of(context).size.height - 60 - kToolbarHeight;
+        print('$_widthSc : $_heightSc');
+        print(MediaQuery.of(context).size.width);
+        print(MediaQuery.of(context).size.height);
+        //setState(() {
+        _content =
+            map['data']['content'].toString().replaceAll('\r\n　　\r\n', '\r\n');
+        if (_content.endsWith('\n')) {
+          _content = _content.substring(0, _content.length - 3);
+        }
+        _pagesIndexList = PagesCount.getChapterPages(
+            _content, _widthSc, _heightSc, _contentFontSize, _lineHeight, _letterSpacing);
+
+        setState(() {
+          if (_pagesIndexList != null) {
+            if (isPre) {
+              _currPagesIndex = _pagesIndexList.length - 1;
+              _currPagesContent = _content.substring(
+                  _pagesIndexList[_currPagesIndex]['start'],
+                  _pagesIndexList[_currPagesIndex]['end']);
+            } else {
+              print('xinzhangjie');
+              _currPagesIndex = 0;
+              _currPagesContent = _content.substring(
+                  _pagesIndexList[_currPagesIndex]['start'],
+                  _pagesIndexList[_currPagesIndex]['end']);
+            }
+          } else {
+            print('xinjuan');
+            _currPagesContent = '卷';
+            _currPagesIndex = 0;
+          }
+        });
       });
     }
-    if (_content != "" || _content != "卷") _scrollController.jumpTo(.0);
+    //if (_content != "" || _content != "卷") _scrollController.jumpTo(.0);
     //_updateBookMark();
     if (_isAdd) {
       _updateReadProgress();
     }
+  }
+
+  _jumpPre() {
+    setState(() {
+      if (_currPagesIndex != 0) {
+        _currPagesIndex--;
+        _currPagesContent = _content.substring(
+            _pagesIndexList[_currPagesIndex]['start'],
+            _pagesIndexList[_currPagesIndex]['end']);
+      } else {
+        if (_currPosition != 0) {
+            _currPosition--;
+            _getChapter(true);
+        }
+      }
+    });
+  }
+
+  _jumpNext() {
+    setState(() {
+      if (_pagesIndexList != null &&
+          _currPagesIndex != _pagesIndexList.length - 1) {
+        print('junpnext');
+        _currPagesIndex++;
+        _currPagesContent = _content.substring(
+            _pagesIndexList[_currPagesIndex]['start'],
+            _pagesIndexList[_currPagesIndex]['end']);
+        //print(_currPagesContent);
+      } else {
+        if (_currPosition != _chapter.length - 1) {
+          print('get next chapter');
+          _currPosition++;
+          _getChapter(false);
+        }
+      }
+    });
   }
 
   _updateReadProgress() {
@@ -129,31 +208,6 @@ class _ReadPageState extends State<ReadPage> with AutomaticKeepAliveClientMixin 
     });
   }
 
-  Widget _contentView() {
-    return Container(
-      child: Text(
-        _content,
-        style: TextStyle(
-          color: Colors.black,
-          height: _lineHeight,
-          fontSize: _contentFontSize,
-          letterSpacing: _letterSpacing,
-        ),
-      ),
-    );
-  }
-
-  Widget _titleView() {
-    return Text(
-      _chapter[_currPosition].name,
-      style: TextStyle(
-        color: Colors.black,
-        fontSize: _tilteFontSize,
-        letterSpacing: 2.0,
-      ),
-    );
-  }
-
   Widget reader() {
     return Container(
       color: Colors.white,
@@ -161,37 +215,56 @@ class _ReadPageState extends State<ReadPage> with AutomaticKeepAliveClientMixin 
       height: MediaQuery.of(context).size.height,
       child: Stack(
         children: <Widget>[
-          SingleChildScrollView(
-            controller: _scrollController,
-            child: Container(
-              padding: EdgeInsets.only(left: 20.0, right: 20.0,top: kToolbarHeight),
-              child: _content == '卷'
-                  ? Center(
-                    child: _titleView(),
-              )
-                  :Column(
+          Container(
+            padding: EdgeInsets.only(
+                left: 20, right: 20, top: 30), //kToolbarHeight),
+            child: _content == '卷'
+                ? Center(
+                    child: Text(
+                      _chapter[_currPosition].name,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: _tilteFontSize,
+                        //letterSpacing: 2.0,
+                      ),
+                    ),
+                  )
+                : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      _titleView(),
-                      _contentView(),
+                      //_titleView(),
+                      Container(
+                        child: Text(
+                          _currPagesContent,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black,
+                            height: _lineHeight,
+                            fontSize: _contentFontSize,
+                            letterSpacing: _letterSpacing,
+                          ),
+                        ),
+                      ),
                     ],
-              ),
-            ),
+                  ),
           ),
+          ReaderOverlay(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    _loadPre();
+                    _jumpPre();
+                    //_loadPre();
                   },
                 ),
               ),
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    _loadNext();
+                    _jumpNext();
+                    //_loadNext();
                   },
                 ),
               ),
@@ -211,40 +284,21 @@ class _ReadPageState extends State<ReadPage> with AutomaticKeepAliveClientMixin 
     );
   }
 
-  _loadPre() {
-    if (_currPosition != 0) {
-      setState(() {
-        _currPosition--;
-        _getChapter();
-      });
-    }
-  }
-
-  _loadNext() {
-    if (_currPosition != _chapter.length -1) {
-      setState(() {
-        _currPosition++;
-        _getChapter();
-      });
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return _chapter.length == 0
         ? LoadingPage()
-        :Scaffold(
-          //drawer: Drawer(),
-          body: Stack(
-            children: <Widget>[
-              reader(),
-              //_isShowMenu ?:,
-              //_isShowMenu ?:,
-            ],
-          ),
-    );
+        : Scaffold(
+            //drawer: Drawer(),
+            body: Stack(
+              children: <Widget>[
+                reader(),
+                //_isShowMenu ?:,
+                //_isShowMenu ?:,
+              ],
+            ),
+          );
   }
 
   @override

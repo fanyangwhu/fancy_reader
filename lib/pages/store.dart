@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'store/category.dart';
 import 'store/gender.dart';
 import 'store/list.dart';
+import 'store/rank.dart';
 
 class Store extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class Store extends StatefulWidget {
 class _StoreState extends State<Store>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   TabController _tabController;
-  List<String> _tabTitles = ['男生','女生','分类','专题'];
+  List<String> _tabTitles = ['男生','女生','分类','榜单','书单'];
 
   @override
   void initState() {
@@ -55,6 +56,7 @@ class _StoreState extends State<Store>
           GenderPage('man'),
           GenderPage('lady'),
           CategoryPage(),
+          RankPage(),
           ListPage(),
         ],
       ),

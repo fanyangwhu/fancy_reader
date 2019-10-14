@@ -18,6 +18,14 @@ class Api {
   static const chapterApi = "https://quapp.1122dh.com/book";
 }
 
+Future<Map> getRankData(String gender, String kind, String period, int page) async {
+  var result = await Dio().get('${Api.rankApi}/$gender/top/$kind/$period/$page.html');
+  if (result.data.runtimeType ==String) {
+    return json.decode(result.data);
+  }
+  return result.data;
+}
+
 
 Future<Map> searchBook(String key, int page) async {
   var result = await Dio().get(Api.searchApi, queryParameters: {
