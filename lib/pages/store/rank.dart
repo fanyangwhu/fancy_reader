@@ -132,8 +132,8 @@ class _RankPageState extends State<RankPage>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(4))
           ),
-          selectedColor: Colors.red,
-          backgroundColor: Colors.blue,
+          selectedColor: Colors.blueGrey,
+          backgroundColor: Colors.grey,
           label: Text(
             _genderTitle[_gender.indexOf(gender)],
             style: TextStyle(
@@ -166,8 +166,8 @@ class _RankPageState extends State<RankPage>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4)
           ),
-          selectedColor: Colors.red,
-          backgroundColor: Colors.blue,
+          selectedColor: Colors.blueGrey,
+          backgroundColor: Colors.grey,
           label: Text(
             _kindTitle[_kind.indexOf(kind)],
             style: TextStyle(
@@ -200,8 +200,8 @@ class _RankPageState extends State<RankPage>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4)
           ),
-          selectedColor: Colors.red,
-          backgroundColor: Colors.blue,
+          selectedColor: Colors.blueGrey,
+          backgroundColor: Colors.grey,
           label: Text(
             _periodTitle[_period.indexOf(period)],
             style: TextStyle(

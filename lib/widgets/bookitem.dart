@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/book.dart';
-//import '../models/bookinfo.dart';
+import 'package:fancy_reader/pages/book_detail.dart';
 
 Widget bookItem(BuildContext context, Book book) {
   return InkWell(
-    onTap: () {},
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+        return BookDetail(book.id, book.name);
+      }));
+    },
     highlightColor: Colors.black12,
     child: Container(
       margin: EdgeInsets.only(left: 20, top: 5, bottom: 5, right: 20),
