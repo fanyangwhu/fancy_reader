@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../models/bookcategory.dart';
 import '../utils/getimgurl.dart';
+import '../pages/category_books.dart';
 
 Widget categoryItem(BuildContext context, int index, BookCategory category) {
   final List<String> categoryImgs = [
@@ -15,7 +16,13 @@ Widget categoryItem(BuildContext context, int index, BookCategory category) {
     "shijiancaokongshi",
   ];
   return GestureDetector(
-    onTap: () {},//跳转TBD
+    onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) {
+            return CategoryBooksPage(category.id, category.name);
+          }));
+    },//跳转TBD
     child: Stack(
       children: <Widget>[
         ClipRRect(

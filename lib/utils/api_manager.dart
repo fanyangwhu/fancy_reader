@@ -67,8 +67,17 @@ Future<Map> getStoreGenderBannerData(String gender) async {
 }
 
 Future<Map> getCategoryData() async {
-  print("get category data");
   var result = await Dio().get("${Api.categoryApi}.html");
+  //print("get category data ${result.data.toString()}");
+  if (result.data.runtimeType == String) {
+    return json.decode(result.data);
+  }
+  return result.data;
+
+}
+
+Future<Map> getCategoryBooksData(String id, String kind, int page) async {
+  var result = await Dio().get("${Api.categoryRankApi}/$id/$kind/$page.html");
   if (result.data.runtimeType == String) {
     return json.decode(result.data);
   }

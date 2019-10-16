@@ -16,10 +16,12 @@ class _ListPageState extends State<ListPage> with AutomaticKeepAliveClientMixin{
     return Scaffold(
       body: Center(
         child: Container(
-          child: CachedNetworkImage(
-            imageUrl: "https://imgapi.jiaston.com/BookFiles/BookImages/mingtianxia.jpg",
-            fit: BoxFit.cover,
-          ),
+          child: Text(
+            '因为我不用\n暂时不想做',
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.blueGrey
+            ),),
         ),
       ),
     );
